@@ -1,0 +1,31 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Adjust this according to your branch name
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}  # Set this in GitHub Secrets
+          password: ${{ secrets.DOCKER_PASSWORD }}  # Set this in GitHub Secrets
+
+      - name: Set environment variables
+        run: |
+          export CORS_ORIGIN=${{ secrets.CORS_ORIGIN }}
+          export CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          export CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
+          export CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
+
+      - name: Build and push Docker images
+        run: |
+          docker-compose up --build
+          docker-compose push
