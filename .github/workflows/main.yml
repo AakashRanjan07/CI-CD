@@ -27,6 +27,11 @@ jobs:
           export CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}
           export CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
           export CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
+          
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
 
       - name: Build and push Docker images
         run: |
