@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./Server
+      dockerfile: Dockerfile
+    image: aakashr07/githubactions:backend
+    ports:
+      - "3000:3000"
+    environment:
+      CORS_ORIGIN: ${CORS_ORIGIN}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+    networks:
+      - mern_network
+    depends_on:
+      - mongodb
+
+  frontend:
+    build:
+      context: ./Client/vite-project
+      dockerfile: Dockerfile
+    image: aakashr07/githubactions:frontend
+    ports:
+      - "5173:5173"
+    networks:
+      - mern_network
+    depends_on:
+      - backend
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - mern_network
+
+networks:
+  mern_network:
+    driver: bridge
+
+volumes:
+  mongo_data:
+    driver: local
